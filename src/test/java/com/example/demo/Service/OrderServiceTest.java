@@ -3,26 +3,17 @@ package com.example.demo.Service;
 import com.example.demo.OrderRepository.OrderRepository;
 import com.example.demo.Produkty.Order;
 import com.example.demo.Produkty.Produkt;
-import org.assertj.core.util.Arrays;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 /*
@@ -41,8 +32,15 @@ class OrderServiceTest {
 
 
     @Test
-    void checkOrdersContainCreatedOrder() {
+    void create() {
+        int userId = 1;
+        List<Produkt> products = new ArrayList<>();
 
+        when(orderRepository.create(ORDER_ID,userId, products)).thenReturn(order);
+
+        Order actualOrder = orderService.create(ORDER_ID, userId, products);
+        verify(orderRepository).create(ORDER_ID,userId, products);
+        assertEquals(order, actualOrder);
     }
 
     @Test
@@ -60,11 +58,19 @@ class OrderServiceTest {
 
     @Test
     void getAll() {
+        orders.add(order);
+        when(orderRepository.getAll()).thenReturn(orders);
 
+        List<Order> actualOrders = orderService.getAll();
+        verify(orderRepository).getAll();
+        assertEquals(orders, actualOrders);
     }
 
     @Test
-    void delete() {
+    void delete() throws Exception {
+
+        orderService.delete(ORDER_ID);
+        verify(orderRepository,times(1)).delete(eq(ORDER_ID));
     }
 
 }
